@@ -1,2 +1,2 @@
-# eswin
-Nanjing Eswin Test Management Platform
+# Platform
+Nanjing Test Management Platform
