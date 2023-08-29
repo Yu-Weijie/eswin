@@ -1,0 +1,53 @@
+*** Starting uWSGI 2.0.21 (64bit) on [Wed Mar 29 15:45:04 2023] ***
+compiled with version: Apple LLVM 14.0.0 (clang-1400.0.29.202) on 29 March 2023 07:44:07
+os: Darwin-22.1.0 Darwin Kernel Version 22.1.0: Sun Oct  9 20:14:54 PDT 2022; root:xnu-8792.41.9~2/RELEASE_X86_64
+nodename: MacBookdeMBP
+machine: x86_64
+clock source: unix
+detected number of CPU cores: 12
+current working directory: /Users/macbookpro/Desktop/自建仿真平台/simulation/Platform/Platform
+writing pidfile to uwsgi.pid
+detected binary path: /Users/macbookpro/opt/anaconda3/envs/simulation/bin/uwsgi
+!!! no internal routing support, rebuild with pcre support !!!
+chdir() to /Users/macbookpro/Desktop/自建仿真平台/simulation/Platform/Platform
+your processes number limit is 2784
+your memory page size is 4096 bytes
+detected max file descriptor number: 10240
+lock engine: OSX spinlocks
+thunder lock: disabled (you can enable it with --thunder-lock)
+probably another instance of uWSGI is running on the same address (127.0.0.1:12344).
+bind(): Address already in use [core/socket.c line 769]
+*** Starting uWSGI 2.0.21 (64bit) on [Wed Mar 29 15:45:36 2023] ***
+compiled with version: Apple LLVM 14.0.0 (clang-1400.0.29.202) on 29 March 2023 07:44:07
+os: Darwin-22.1.0 Darwin Kernel Version 22.1.0: Sun Oct  9 20:14:54 PDT 2022; root:xnu-8792.41.9~2/RELEASE_X86_64
+nodename: MacBookdeMBP
+machine: x86_64
+clock source: unix
+detected number of CPU cores: 12
+current working directory: /Users/macbookpro/Desktop/自建仿真平台/simulation/Platform/Platform
+writing pidfile to uwsgi.pid
+detected binary path: /Users/macbookpro/opt/anaconda3/envs/simulation/bin/uwsgi
+!!! no internal routing support, rebuild with pcre support !!!
+chdir() to /Users/macbookpro/Desktop/自建仿真平台/simulation/Platform/Platform
+your processes number limit is 2784
+your memory page size is 4096 bytes
+detected max file descriptor number: 10240
+lock engine: OSX spinlocks
+thunder lock: disabled (you can enable it with --thunder-lock)
+uWSGI http bound on 127.0.0.1:12346 fd 4
+uwsgi socket 0 bound to TCP address 127.0.0.1:54971 (port auto-assigned) fd 3
+Python version: 3.6.13 |Anaconda, Inc.| (default, Feb 23 2021, 12:58:59)  [GCC Clang 10.0.0 ]
+Set PythonHome to /Users/macbookpro/opt/anaconda3/envs/simulation
+Python main interpreter initialized at 0x7fca1780f600
+python threads support enabled
+your server socket listen backlog is limited to 100 connections
+your mercy for graceful operations on workers is 60 seconds
+mapped 166656 bytes (162 KB) for 2 cores
+*** Operational MODE: threaded ***
+failed to open python file Platform/wsgi.py
+unable to load app 0 (mountpoint='') (callable not found or import error)
+*** no app loaded. going in full dynamic mode ***
+*** uWSGI is running in multiple interpreter mode ***
+spawned uWSGI master process (pid: 2393)
+spawned uWSGI worker 1 (pid: 2394, cores: 2)
+spawned uWSGI http 1 (pid: 2395)

@@ -1,0 +1,362 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <!--<meta http-equiv="X-UA-Compatible" content="IE=edge">-->
+    <title>监控大屏</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
+    <!-- Theme style -->
+    <link rel="stylesheet"
+          href="https://adminlte.io/themes/AdminLTE/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://adminlte.io/themes/AdminLTE/dist/css/AdminLTE.min.css">
+    <link href="{% static 'plugins/bootstrap-3.4.1/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+
+</head>
+<body>
+<!--<div class="wrapper">-->
+<!-- Main content -->
+<div class="container-fluid" style="margin-top: 20px">
+    <!-- Small boxes (Stat box) -->
+    <div class="row">
+        <div class="col-sm-3">
+            <!-- small box -->
+            <div class="small-box bg-info">
+                <div class="inner">
+                    <h3>{{ user_count }}</h3>
+                    <p>用户总数</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-bag"></i>
+                </div>
+                <a href="/admin/auth/user/" class="small-box-footer">更多信息 <i
+                        class="fas fa-arrow-circle-right"></i></a>
+                <!--目前有bug-->
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-sm-3">
+            <!-- small box -->
+            <div class="small-box bg-success">
+                <div class="inner">
+                    <h3 id="router_count">{{ router_count }}</h3>
+                    <p>设备总数</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-stats-bars"></i>
+                </div>
+                <a href="/admin/app01/router/" class="small-box-footer">更多信息 <i
+                        class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-sm-3">
+            <!-- small box -->
+            <div class="small-box bg-info">
+                <div class="inner">
+                    <!--                    <h3>{{ online_count }}</h3>-->
+                    <h3>0</h3>
+
+                    <p>样例总数</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-bag"></i>
+                </div>
+                <a href="/admin/app01/equipment/" class="small-box-footer">更多信息 <i
+                        class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-sm-3">
+            <!-- small box -->
+            <div class="small-box bg-success">
+                <div class="inner">
+                    <!--                    <h3>{{ offline_count }}</h3>-->
+                    <h3>0</h3>
+                    <p>失败总数</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-stats-bars"></i>
+                </div>
+                <a href="#" class="small-box-footer">更多信息 <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <!-- ./col -->
+    </div>
+</div>
+
+
+<div class="col-sm-6">
+    <div class="panel panel-default">
+        <div class="panel-heading">柱状图</div>
+        <div class="panel-body">
+            <div id="bar" style="width: 600px; height: 400px">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-6">
+    <div class="panel panel-default">
+        <div class="panel-heading">饼图</div>
+        <div class="panel-body">
+            <div id="pie" style="width: 100%; height: 400px">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="col-sm-12">
+    <div class="panel panel-default">
+        <div class="panel-heading">横向柱状图</div>
+        <div class="panel-body">
+            <div id="fail_number" style="width: 100%; height: 400px">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="col-sm-12">
+    <div class="panel panel-default">
+        <div class="panel-heading">折线图</div>
+        <div class="panel-body">
+            <div id="throughput" style="width: 100%; height: 400px">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'plugins/bootstrap-3.4.1/dist/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/package/dist/echarts.js' %}"></script>
+<script type="text/javascript">
+    $(function () {
+        initBar();
+        initPie();
+        // initTransverseBar();
+        initLine();
+    })
+
+    function initBar() {
+        var myChart = echarts.init(document.getElementById('bar'));
+        var option = {
+            title: {
+                text: '标题'
+            },
+            tooltip: {},
+            legend: {
+                data: []   //后台获取
+            },
+            xAxis: {
+                data: []   //后台获取
+            },
+            yAxis: {},
+            series: []    //后台获取
+        };
+
+        $.ajax({
+            url: "/dashboard/bar/",
+            type: 'get',
+            dataType: 'JSON',
+            success: function (res) {
+                if (res.status) {
+                    option.legend.data = res.data.legend   // 后台legend赋值给前端
+                    option.xAxis.data = res.data.x_axis;   // 后台x轴赋给前端
+                    option.series = res.data.series_list;  // 后台数据赋给前端
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+                }
+            },
+        })
+    }
+
+    <!-- 饼状图 -->
+    function initPie() {
+        var myChart = echarts.init(document.getElementById('pie'));
+        var option = {
+            title: {
+                text: '测试样例统计',
+                /*subtext: '子标题',*/
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'item'
+            },
+            legend: {
+                bottom: 0  /*legend位置在下方*/
+            },
+            series: [
+                {
+                    name: '数量',
+                    type: 'pie',
+                    radius: '50%',
+                    data: [],
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+        };
+
+        $.ajax({
+            url: '/dashboard/pie/',
+            type: 'get',
+            dataType: 'JSON',
+            success: function (res) {
+                if (res.status) {
+                    option.series[0].data = res.data;
+                    myChart.setOption(option);  //将后台获取的数据更新到option中
+                }
+            }
+        })
+    }
+
+    <!--横向柱状图-->
+    var transverseBar = echarts.init(document.getElementById('fail_number'));
+    // var transverseBarPot;
+    function initTransverseBar(iot_case, iot_case_num) {
+        var option = {
+            title: {
+                text: '样例失败次数'
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'value',
+                boundaryGap: [0, 0.01]
+            },
+            yAxis: {
+                type: 'category',
+                data: []
+            },
+            series: [
+                {
+                    type: 'bar',
+                    itemStyle: {
+                        color: '#f05654'    // 可以使用渐变色来加深程度
+                    },
+                    data: []
+                }
+            ]
+        };
+        option.yAxis.data = iot_case;
+        option.series[0].data = iot_case_num;
+        transverseBar.setOption(option);
+    }
+
+    <!--折线图-->
+    function initLine() {
+        var myChart = echarts.init(document.getElementById('throughput'));
+        var option = {
+            title: {
+                text: '20M TCP 上下行速率'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {},
+            toolbox: {
+                show: true,
+                feature: {
+                    dataZoom: {
+                        yAxisIndex: 'none'
+                    },
+                    dataView: {readOnly: false},
+                    magicType: {type: ['line', 'bar']},
+                    restore: {},
+                    saveAsImage: {}
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+            },
+            yAxis: {
+                type: 'value',
+                axisLabel: {
+                    formatter: '{value}'
+                }
+            },
+            series: [
+                {
+                    name: '上行',
+                    type: 'line',
+                    data: [10, 11, 13, 11, 12, 12, 9, 10, 15, 17],
+                    markPoint: {
+                        data: [
+                            {type: 'max', name: 'Max'},
+                            {type: 'min', name: 'Min'}
+                        ]
+                    },
+                    markLine: {
+                        data: [{type: 'average', name: 'Avg'}]
+                    }
+                },
+                {
+                    name: '下行',
+                    type: 'line',
+                    data: [1, 2, 2, 5, 3, 2, 0, 4, 6, 1],
+                    markPoint: {
+                        data: [{name: '最低点', value: -2, xAxis: 1, yAxis: -1.5}]
+                    },
+                    markLine: {
+                        data: [
+                            {type: 'average', name: 'Avg'},
+                            [
+                                {
+                                    symbol: 'none',
+                                    x: '90%',
+                                    yAxis: 'max'
+                                },
+                                {
+                                    symbol: 'circle',
+                                    label: {
+                                        position: 'start',
+                                        formatter: 'Max'
+                                    },
+                                    type: 'max',
+                                    name: '最高点'
+                                }
+                            ]
+                        ]
+                    }
+                }
+            ]
+        };
+        option && myChart.setOption(option);
+    }
+
+    var ws = new WebSocket("ws://127.0.0.1:8000/dashboard_test/");
+    ws.onmessage = function (event) {
+        const ws_data = JSON.parse(event.data);
+        // console.log(ws_data);
+        document.getElementById("router_count").innerHTML = ws_data['router_count'];
+        let iot_case = Object.keys(ws_data['iot_data']);
+        let iot_case_num = Object.values(ws_data['iot_data']);
+        initTransverseBar(iot_case, iot_case_num);
+    }
+</script>
+
+
+</body>
+</html>
+ 

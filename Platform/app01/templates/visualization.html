@@ -1,0 +1,368 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="{% static 'plugins/bootstrap-3.4.1/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+</head>
+<body>
+
+
+<div class="container">
+    <div class="panel panel-default" style="margin-top: 20px">
+        <div class="panel-heading">折线图</div>
+        <div class="panel-body">
+            <div id="snr" style="width: 100%; height: 300px">
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+
+        <div class="container">
+    <div class="panel panel-default" style="margin-top: 20px">
+        <div class="panel-heading">折线图</div>
+        <div class="panel-body">
+            <div id="rssi" style="width: 100%; height: 300px">
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+
+        <!--动态折线图-->
+
+{#        <div class="panel panel-default" style="margin-top: 20px">#}
+{#            <div class="panel-heading">折线图</div>#}
+{#            <div class="panel-body">#}
+{#                <div id="main" style="width: 100%; height: 300px">#}
+{##}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+         <div class="container">
+    <div class="panel panel-default" style="margin-top: 20px">
+        <div class="panel-heading">内存使用情况</div>
+        <div class="panel-body">
+            <div id="cpu" style="width: 100%; height: 600px">
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="row"></div>
+
+
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+    <script src="{% static 'plugins/bootstrap-3.4.1/dist/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/package/dist/echarts.js' %}"></script>
+    <script type="text/javascript">
+        $(function () {
+            initSnrLine();
+            initRssiLine();
+        })
+
+
+
+
+
+
+
+        <!--折线图-->
+
+        function initSnrLine() {
+            var now = new Date();
+            var str_now = now.toLocaleString();
+
+            var myChart = echarts.init(document.getElementById('snr'));
+            var option = {
+                title: {
+                    text: '信噪比（SNR）'
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        animation: false
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                     data: [new Date(+now - oneSec * 48).toLocaleString(),
+                        new Date(+now - oneSec * 46).toLocaleString(),
+                        new Date(+now - oneSec * 44).toLocaleString(),
+                        new Date(+now - oneSec * 42).toLocaleString(),
+                        new Date(+now - oneSec * 40).toLocaleString(),
+                        new Date(+now - oneSec * 38).toLocaleString(),
+                        new Date(+now - oneSec * 36).toLocaleString(),
+                        new Date(+now - oneSec * 34).toLocaleString(),
+                        new Date(+now - oneSec * 32).toLocaleString(),
+                        new Date(+now - oneSec * 30).toLocaleString(),
+                        new Date(+now - oneSec * 28).toLocaleString(),
+                        new Date(+now - oneSec * 26).toLocaleString(),
+                        new Date(+now - oneSec * 24).toLocaleString(),
+                        new Date(+now - oneSec * 22).toLocaleString(),
+                        new Date(+now - oneSec * 20).toLocaleString(),
+                        new Date(+now - oneSec * 18).toLocaleString(),
+                        new Date(+now - oneSec * 16).toLocaleString(),
+                        new Date(+now - oneSec * 14).toLocaleString(),
+                        new Date(+now - oneSec * 12).toLocaleString(),
+                        new Date(+now - oneSec * 10).toLocaleString(),
+                        new Date(+now - oneSec * 8).toLocaleString(),
+                        new Date(+now - oneSec * 6).toLocaleString(),
+                        new Date(+now - oneSec * 4).toLocaleString(),
+                        new Date(+now - oneSec * 2).toLocaleString(),
+                        str_now],
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        data: [],
+                        type: 'line',
+                        smooth: true,
+                        areaStyle: {}, //下方面积区域
+                    }
+                ]
+            };
+
+            $.ajax({
+                url: '/snr/line/{{ uid }}',
+                type: 'get',
+                dataType: 'JSON',
+                success: function (res) {
+                    if (res.status) {
+                        {#option.xAxis.data = res.data.x_axis;#}
+                        option.series[0].data = res.data.snr;     // 注意：不能使用option.series.data  series是一个数组
+                        myChart.setOption(option);
+                    }
+                }
+            })
+        }
+
+        setInterval(function () {
+            initSnrLine();
+        }, 2000);
+
+
+
+            function initRssiLine() {
+            var now = new Date();
+            var str_now = now.toLocaleString();
+
+            var myChart = echarts.init(document.getElementById('rssi'));
+            var option = {
+                title: {
+                    text: '信号强度（RSSI）'
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        animation: false
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    {#type: 'time',#}
+                    {#data: []#}
+                    data: [new Date(+now - oneSec * 48).toLocaleString(),
+                        new Date(+now - oneSec * 46).toLocaleString(),
+                        new Date(+now - oneSec * 44).toLocaleString(),
+                        new Date(+now - oneSec * 42).toLocaleString(),
+                        new Date(+now - oneSec * 40).toLocaleString(),
+                        new Date(+now - oneSec * 38).toLocaleString(),
+                        new Date(+now - oneSec * 36).toLocaleString(),
+                        new Date(+now - oneSec * 34).toLocaleString(),
+                        new Date(+now - oneSec * 32).toLocaleString(),
+                        new Date(+now - oneSec * 30).toLocaleString(),
+                        new Date(+now - oneSec * 28).toLocaleString(),
+                        new Date(+now - oneSec * 26).toLocaleString(),
+                        new Date(+now - oneSec * 24).toLocaleString(),
+                        new Date(+now - oneSec * 22).toLocaleString(),
+                        new Date(+now - oneSec * 20).toLocaleString(),
+                        new Date(+now - oneSec * 18).toLocaleString(),
+                        new Date(+now - oneSec * 16).toLocaleString(),
+                        new Date(+now - oneSec * 14).toLocaleString(),
+                        new Date(+now - oneSec * 12).toLocaleString(),
+                        new Date(+now - oneSec * 10).toLocaleString(),
+                        new Date(+now - oneSec * 8).toLocaleString(),
+                        new Date(+now - oneSec * 6).toLocaleString(),
+                        new Date(+now - oneSec * 4).toLocaleString(),
+                        new Date(+now - oneSec * 2).toLocaleString(),
+                        str_now],
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        data: [],
+                        type: 'line',
+                        {#smooth: true#}
+                    }
+                ]
+            };
+
+            $.ajax({
+                url: '/rssi/line/{{ uid }}',
+                type: 'get',
+                dataType: 'JSON',
+                success: function (res) {
+                    if (res.status) {
+                        {#option.xAxis.data = res.data.x_axis;#}
+                        option.series[0].data = res.data.rssi;     // 注意：不能使用option.series.data  series是一个数组
+                        myChart.setOption(option);
+                    }
+                }
+            })
+        }
+
+        setInterval(function () {
+            initRssiLine();
+        }, 2000)
+
+
+
+        let data = [];
+        let now = new Date();
+        let oneDay = 24 * 3600 * 1000;
+        let oneHour = 3600 * 1000;
+        let oneMin = 60 * 1000;
+        let oneSec = 1000;
+        let value = Math.random() * 1000;
+
+
+
+
+
+
+
+
+
+        {#import * as echarts from 'echarts';#}
+
+var chartDom = document.getElementById('cpu');
+var myChart = echarts.init(chartDom);
+var option;
+
+const gaugeData = [
+  {
+    value: 20,
+    name: 'Perfect',
+    title: {
+      offsetCenter: ['0%', '-30%']
+    },
+    detail: {
+      valueAnimation: true,
+      offsetCenter: ['0%', '-20%']
+    }
+  },
+  {
+    value: 40,
+    name: 'Good',
+    title: {
+      offsetCenter: ['0%', '0%']
+    },
+    detail: {
+      valueAnimation: true,
+      offsetCenter: ['0%', '10%']
+    }
+  },
+  {
+    value: 60,
+    name: 'Commonly',
+    title: {
+      offsetCenter: ['0%', '30%']
+    },
+    detail: {
+      valueAnimation: true,
+      offsetCenter: ['0%', '40%']
+    }
+  }
+];
+option = {
+  series: [
+    {
+      type: 'gauge',
+      startAngle: 90,
+      endAngle: -270,
+      pointer: {
+        show: false
+      },
+      progress: {
+        show: true,
+        overlap: false,
+        roundCap: true,
+        clip: false,
+        itemStyle: {
+          borderWidth: 1,
+          borderColor: '#464646'
+        }
+      },
+      axisLine: {
+        lineStyle: {
+          width: 40
+        }
+      },
+      splitLine: {
+        show: false,
+        distance: 0,
+        length: 10
+      },
+      axisTick: {
+        show: false
+      },
+      axisLabel: {
+        show: false,
+        distance: 50
+      },
+      data: gaugeData,
+      title: {
+        fontSize: 14
+      },
+      detail: {
+        width: 50,
+        height: 14,
+        fontSize: 14,
+        color: 'inherit',
+        borderColor: 'inherit',
+        borderRadius: 20,
+        borderWidth: 1,
+        formatter: '{value}%'
+      }
+    }
+  ]
+};
+setInterval(function () {
+  gaugeData[0].value = +(Math.random() * 100).toFixed(2);
+  gaugeData[1].value = +(Math.random() * 100).toFixed(2);
+  gaugeData[2].value = +(Math.random() * 100).toFixed(2);
+  myChart.setOption({
+    series: [
+      {
+        data: gaugeData,
+        pointer: {
+          show: false
+        }
+      }
+    ]
+  });
+}, 2000);
+
+option && myChart.setOption(option);
+
+
+
+
+
+
+
+
+
+
+    </script>
+</body>
+</html>
